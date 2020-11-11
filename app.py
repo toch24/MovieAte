@@ -26,6 +26,7 @@ def register():
     return render_template('register.html')
 
 #smelly buttsbv
+#very smelly
 
 if __name__ == '__main__':
     app.run()
