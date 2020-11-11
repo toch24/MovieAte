@@ -18,6 +18,7 @@ def home():
 
 @app.route('/login')
 def login():
+    #this is a comment
     return render_template('login.html')
 
 @app.route('/register')
