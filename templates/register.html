@@ -6,7 +6,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   </head>
   <body>
-
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000000;">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -40,7 +47,6 @@
       		Register
       	</h1>
     	<form action="/postregister" method="POST">
-
     		<div class="form-group">
     			<input class="form-control" type="text" name="username" placeholder="Username">
             </div>
@@ -51,8 +57,12 @@
 
         <div class="form-group">
     			<input class="form-control" type="text" name="lname" placeholder="Last Name">
-    		</div>
-
+        </div>
+        
+        <div class="form-group">
+    			<input class="form-control" type="text" name="location" placeholder="Location">
+        </div>
+        
         <div class="form-group">
     			<input class="form-control" type="text" name="email" placeholder="Email Address">
     		</div>

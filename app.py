@@ -18,14 +18,37 @@ def home():
 
 @app.route('/login')
 def login():
-    #this is a comment
     return render_template('login.html')
 
 @app.route('/register')
 def register():
     return render_template('register.html')
 
-#smelly buttsbv
+@app.route('/postregister', methods = ['POST'])
+def postregister():
+    c = conn().cursor()
+    username = request.form['username']
+    location = request.form['location']
+    fname = request.form['fname']
+    lname = request.form['lname']
+    email = request.form['email']
+    password = request.form['password']
+    cpassword = request.form['cpassword']
+
+    if password == cpassword:
+        try:
+            c.execute("INSERT INTO Users (Username, firstname, lastname, Locations) VALUES (?, ?, ?, ?)", username, fname, lname, location)
+            c.execute("INSERT INTO Logins (Email, Password) VALUES (?, ?)", email, password)
+            flash('Successfully registered')
+            c.commit()
+        except:
+            flash('User or/and email address already exists')
+            c.rollback()
+    else:
+        flash('Password does not meet confirm password')
+
+    c.close()
+    return render_template('register.html')
 
 if __name__ == '__main__':
     app.run()
