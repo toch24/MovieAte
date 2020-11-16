@@ -14,15 +14,43 @@ def conn():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if 'logged' in session:
+       return render_template('home.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    else:
+       return render_template('home.html', usr="null", is_log=False)
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+@app.route('/home')
+def homeuser():
+    return redirect(url_for('.home') )
+
+@app.route('/postlogin', methods = ['POST'])
+def postlogin():
+    c = conn().cursor()
+    username = request.form['username']
+    password = request.form['password']
+
+    c.execute("SELECT Username, Password FROM Users, Logins WHERE Users.Username = ? AND Logins.Password = ?", (username, password))
+    data = c.fetchone()
+
+    if data:
+        session['logged'] = True
+        session['username'] = data[0]
+        flash("Successfully logged in")
+        return redirect('/home')
+    else:
+        flash("Username or password is incorrect.")
+
+
+    c.close()
+    return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 @app.route('/postregister', methods = ['POST'])
 def postregister():
@@ -48,7 +76,14 @@ def postregister():
         flash('Password does not meet confirm password')
 
     c.close()
-    return render_template('register.html')
+    return render_template('register.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged', None)
+    session.pop('username', None)
+    message = "Successfully Logged Out"
+    return render_template('msg.html', msg = message, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 if __name__ == '__main__':
     app.run()
