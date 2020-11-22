@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 import pyodbc
+from imdb import IMDb
 
 app = Flask(__name__)
 app.secret_key = "qwroiqwkdnkas"
+ia = IMDb()
 
 def conn():
     server = 'imovies.database.windows.net'
