@@ -153,5 +153,11 @@ def logout():
     message = "Successfully Logged Out"
     return render_template('msg.html', msg = message, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
+@app.route('/mygroup', methods = ['POST', 'GET'])
+def mygroup():
+    c = conn().cursor()
+    # username = 
+    c.close()
+
 if __name__ == '__main__':
     app.run()
