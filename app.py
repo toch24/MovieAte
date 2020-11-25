@@ -64,11 +64,13 @@ def postmoviesearch():
         rolelist = []
         ratinglist = []
         imageurl = []
+        movieidlist = []
 
         for movie in movies:
             namelist.append(movie['title'])
             imageurl.append(movie['cover url'])
             movieID = movie.movieID
+            movieidlist.append(movieID)
             movie = ia.get_movie(movieID)
             year = movie['year']
             yearlist.append(year)
@@ -107,7 +109,7 @@ def postmoviesearch():
             except:
                 ratinglist.append("N/A")
 
-        movie_list = list(zip(namelist, yearlist, directorlist, genrelist, actorlist, rolelist, ratinglist, imageurl))
+        movie_list = list(zip(namelist, yearlist, directorlist, genrelist, actorlist, rolelist, ratinglist, imageurl, movieidlist))
  
     else:
         flash("No movie with that name")
@@ -115,6 +117,58 @@ def postmoviesearch():
 
     return render_template('postsearch.html', rows = movie_list, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
+
+@app.route("/addMovie", methods = ['GET', 'POST'])
+def addmovie():
+    if 'logged' in session:
+        movie_list = []
+        title = request.form['title']
+        year = request.form['year']
+        directors = request.form['directors']
+        genres = request.form['genres']
+        actor = request.form['actor']
+        role = request.form['role']
+        rating = request.form['rating']
+        url = request.form['url']
+        id = request.form['id']
+        movie_list.append(title)
+        movie_list.append(year)
+        movie_list.append(directors)
+        movie_list.append(genres)
+        movie_list.append(actor)
+        movie_list.append(role)
+        movie_list.append(rating)
+        movie_list.append(url)
+        movie_list.append(id)
+        return render_template('addmovie.html', row = movie_list, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+    else:
+        flash("Login is required")
+        return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+
+@app.route("/postadd", methods = ['GET', 'POST'])
+def postadd():
+    c = conn().cursor()
+    title = request.form['title']
+    year = request.form['year']
+    directors = request.form['directors']
+    genres = request.form['genres']
+    actor = request.form['actor']
+    role = request.form['role']
+    rating = request.form['rating']
+    url = request.form['url']
+    id = request.form['id']
+    userrating = request.form['userrating']
+    review = request.form['review']
+    try:
+        c.execute("INSERT INTO Watched_Movies (Username, movieID, movieName, MovieYear, Director_name, Genre, Lead_Actor, roles, Rating, url, UserRating, review) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", session['username'], id, title, int(year), str(directors), str(genres), actor, role, float(rating), url, float(userrating), review)
+        c.commit()
+        flash("Successfully added to your list")
+    except:
+        flash("Movie already in your list")
+    c.close()
+    return render_template('home.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 @app.route('/register')
 def register():
