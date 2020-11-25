@@ -50,6 +50,72 @@ def postlogin():
     c.close()
     return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
+@app.route('/postmoviesearch', methods = ['POST', 'GET'])
+def postmoviesearch():
+    name = request.form['searchmovie']
+    movies = ia.search_movie(name)
+   
+    if movies:
+        namelist = []
+        yearlist = []
+        directorlist = []
+        genrelist = []
+        actorlist = []
+        rolelist = []
+        ratinglist = []
+        imageurl = []
+
+        for movie in movies:
+            namelist.append(movie['title'])
+            imageurl.append(movie['cover url'])
+            movieID = movie.movieID
+            movie = ia.get_movie(movieID)
+            year = movie['year']
+            yearlist.append(year)
+            try:
+                dlst = []
+                for director in movie['directors']:
+                    dlst.append(director['name'])
+
+                tuple_list = tuple(dlst)
+                directorlist.append(tuple(dlst))  
+
+            except:
+                directorlist.append("N/A")
+            try:
+                glst = []
+                for genre in movie['genres']:
+                    glst.append(genre)
+                tuple_list = tuple(glst)
+                genrelist.append(tuple_list)
+
+            except:
+                genrelist.append("N/A")
+            try:
+                actor = movie['cast'][0]
+                main_actor = actor['name']
+                actorlist.append(main_actor)
+                role = actor.currentRole
+                rolelist.append(role)
+            except:
+                actorlist.append("N/A")
+                rolelist.append("N/A")
+            
+            try:
+                rating = movie.data['rating']
+                ratinglist.append(rating)
+            except:
+                ratinglist.append("N/A")
+
+        movie_list = list(zip(namelist, yearlist, directorlist, genrelist, actorlist, rolelist, ratinglist, imageurl))
+ 
+    else:
+        flash("No movie with that name")
+        movie_list = []
+
+    return render_template('postsearch.html', rows = movie_list, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+
 @app.route('/register')
 def register():
     return render_template('register.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
