@@ -51,17 +51,13 @@
       <td>{{ row[7]}}</td>
       <td>{{ row[8]}}</td>
       <td>
-        <form action="/addMovie" method="POST">
-        <input type = "hidden" name = "title" value = "{{ row[0] }}" >
-        <input type = "hidden" name = "year" value = "{{ row[1] }}" >
-        <input type = "hidden" name = "directors" value = "{{ row[2] }}" >
-        <input type = "hidden" name = "genres" value = "{{ row[3] }}" >
-        <input type = "hidden" name = "actor" value = "{{ row[4] }}" >
-        <input type = "hidden" name = "role" value = "{{ row[5] }}" >
-        <input type = "hidden" name = "rating" value = "{{ row[6] }}" >
-        <input type = "hidden" name = "url" value = "{{ row[7] }}" >
-        <input type = "hidden" name = "id" value = "{{ row[8] }}" >
-        <button type = "submit" class="btn btn-md btn-success btn-block">Add!</button>
+        <form action="/edit" method="POST">
+        <input type = "hidden" name = "id" value = "{{ row[10] }}" >
+        <button style="background-color:blue; border-color:blue; color:black" type = "submit" class="btn btn-md btn-success btn-block">Edit</button>
+       </form>
+       <form action="/remove" method="POST">
+        <input type = "hidden" name = "id" value = "{{ row[10] }}" >
+        <button  type = "submit" class="btn btn-md btn-success btn-block">Remove</button>
        </form>
      </td>
 
