@@ -222,6 +222,95 @@ def remove():
     c.close()
     return redirect("/mymovies")
 
+@app.route('/profile')
+def profile():
+    if 'logged' in session:
+        user = session['username']
+        c = conn().cursor()
+        c.execute("SELECT FirstName, LastName FROM Users WHERE Username = ?", user)
+        data = c.fetchone()
+        c.close()
+
+        fname = data[0]
+        lname = data[1]
+        return render_template('profile.html', name = user, firstname = fname, lastname = lname, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    else:
+        return redirect('/login')
+
+#Update First Name
+@app.route('/FUP', methods = ['Get', 'Post'])
+def FUP():
+    return render_template("FUP.html" , usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+@app.route('/FirstUP', methods = ['GET', 'POST'])
+def FirstUP():
+    c = conn().cursor()
+    fname = request.form['fname']
+    password = request.form['password']
+    c.execute("SELECT Password FROM Users WHERE Username = ?", session['username'])
+    data = c.fetchone()
+
+    if password == data[0]:
+        c.execute("UPDATE Users SET firstname = ? WHERE Username = ?", fname , session['username'])
+        c.commit()
+        flash("First Name Updated!")
+        return redirect('/profile')
+    else:
+        flash("Incorrect password")
+        return render_template("FUP.html", usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    c.close()
+
+#Update Last Name
+@app.route('/LUP', methods = ['Get', 'Post'])
+def LUP():
+    return render_template("LUP.html" , usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+@app.route('/LastUP', methods = ['GET', 'POST'])
+def LastUP():
+    c = conn().cursor()
+    lname = request.form['lname']
+    password = request.form['password']
+    c.execute("SELECT Password FROM Users WHERE username = ?", session['username'])
+    data = c.fetchone()
+
+    if password == data[0]:
+        c.execute("UPDATE Users SET lastname = ? WHERE Username = ?", lname , session['username'])
+        c.commit()
+        flash("Last Name Updated!")
+        return redirect('/profile')
+    else:
+        flash("Incorrect password")
+        return render_template("LUP.html", usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    c.close()
+
+#Update Password
+@app.route('/PUP', methods = ['Get', 'Post'])
+def PUP():
+    return render_template("PUP.html" , usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+@app.route('/PasswordUP', methods = ['GET', 'POST'])
+def PasswordUP():
+    c = conn().cursor()
+    password = request.form['password']
+    npassword = request.form['npassword']
+    cnpassword = request.form['cnpassword']
+    c.execute("SELECT Password FROM Users WHERE username = ?", session['username'])
+    data = c.fetchone()
+
+    if npassword == cnpassword:
+        if password == data[0]:
+            c.execute("UPDATE Users SET Password = ? WHERE Username = ?", npassword , session['username'])
+            c.commit()
+            flash("Password Updated!")
+            return redirect('/profile')
+        else:
+            flash("Incorrect password")
+            return render_template("PUP.html", usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    else:
+        flash("New password does not meet confirm password")
+        return render_template("PUP.html", usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+    c.close()
 
 @app.route('/register')
 def register():
