@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>idk</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  </head>
+  <body>
+
+  {% block bar %}
+  {% include 'top_bar.html' %}
+  {% endblock %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+          {{ message }}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <h1 style="text-align: center;">
+    Edit your review
+</h1>
+  <form action="/postedit" method="POST">
+    <input type = "hidden" name = "id" value = "{{ id }}" >
+    <div class="form-group">
+        <input class="form-control" type="password" name="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="text" name="userrating" placeholder="New Rating">
+    </div>
+    <div class="form-group">
+        <textarea name="review" rows="8" cols="77">New Review</textarea>
+      </div>
+
+      <button type = "submit" class="btn btn-md btn-success btn-block">Submit!</button>
+    </form>
+  </body>
+</html>

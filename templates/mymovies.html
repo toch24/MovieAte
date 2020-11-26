@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>idk</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  </head>
+  <body>
+
+  {% block bar %}
+  {% include 'top_bar.html' %}
+  {% endblock %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+          {{ message }}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+  <h1 style="text-align: center;">
+    My Movies
+</h1>
+  <div class="container">
+    <table border = 2>
+    <thead>
+    <td> </td>
+    <td>Movie</td>
+    <td>Year</td>
+    <td>Directors</td>
+    <td>Genres</td>
+    <td>Main Actor</td>
+    <td>Role</td>
+    <td>Rating</td>
+    <td>My Review</td>
+    <td>My Rating</td>
+    </thead>
+    
+  {% for row in rows %}
+    <tr>
+      <td> <img src ="{{ row[9]}}" width="75" height="75"></td>
+      <td>{{ row[0]}}</td>
+      <td>{{ row[1]}}</td>
+      <td>{{ row[2]}}</td>
+      <td>{{ row[3]}}</td>
+      <td>{{ row[4]}}</td>
+      <td>{{ row[5]}}</td>
+      <td>{{ row[6]}}</td>
+      <td>{{ row[7]}}</td>
+      <td>{{ row[8]}}</td>
+      <td>
+        <form action="/edit" method="POST">
+        <input type = "hidden" name = "id" value = "{{ row[10] }}" >
+        <button style="background-color:blue; border-color:blue; color:black" type = "submit" class="btn btn-md btn-success btn-block">Edit</button>
+       </form>
+       <form action="/remove" method="POST">
+        <input type = "hidden" name = "id" value = "{{ row[10] }}" >
+        <button  type = "submit" class="btn btn-md btn-success btn-block">Remove</button>
+       </form>
+     </td>
+
+  
+    </tr>
+  
+  {% endfor %}
+    </table>
+    </div>
+
+
+  </body>
+</html>
