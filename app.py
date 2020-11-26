@@ -209,9 +209,18 @@ def logout():
 
 @app.route('/mygroup', methods = ['POST', 'GET'])
 def mygroup():
-    c = conn().cursor()
-    # username = 
-    c.close()
+    if 'logged' in session:
+        c = conn().cursor()
+        currentUser = session['username']
+    
+        c.execute("SELECT * FROM Watched_Movies WHERE Username = '?'", currentUser)
+        c.commit()
+        c.close()
+    
+    else:
+        flash("Login is required")
+        return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
 
 if __name__ == '__main__':
     app.run()
