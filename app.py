@@ -262,12 +262,25 @@ def logout():
 def mygroup():
     if 'logged' in session:
         c = conn().cursor()
-        currentUser = session['username']
-    
-        c.execute("SELECT * FROM Watched_Movies WHERE Username = '?'", currentUser)
-        c.commit()
+        # Test table
+        try:
+            c.execute("SELECT movieName, MovieYear, Director_name, Genre, UserRating, url, movieID FROM Watched_Movies WHERE Username = ?", session['username'])
+            gData = c.fetchall()
+            return render_template('mygroup.html', rows = gData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        except:
+            flash("Nothing found")
+            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+        # group by same movie name
+        try:
+            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName = ANY(SELECT movieName FROM Watched_Movies WHERE Username = ?)", session['username'], session['username'])
+            gMNData = c.fetchall()
+            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        except:
+            flash("Nothing found")
+            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
         c.close()
-    
     else:
         flash("Login is required")
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
