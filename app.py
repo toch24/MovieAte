@@ -213,6 +213,16 @@ def postedit():
         flash("Password incorrect")
         return redirect('/mymovies')
 
+@app.route('/remove', methods = ['GET', 'POST'])
+def remove():
+    c = conn().cursor()
+    id = request.form['id']
+    c.execute("DELETE FROM Watched_Movies WHERE movieID = ?", id)
+    c.commit()
+    c.close()
+    return redirect("/mymovies")
+
+
 @app.route('/register')
 def register():
     return render_template('register.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
