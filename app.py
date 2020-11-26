@@ -355,20 +355,28 @@ def mygroup():
         try:
             c.execute("SELECT movieName, MovieYear, Director_name, Genre, UserRating, url, movieID FROM Watched_Movies WHERE Username = ?", session['username'])
             gData = c.fetchall()
-            return render_template('mygroup.html', rows = gData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+#            return render_template('mygroup.html', rows = gData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
             flash("Nothing found")
-            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+#            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
         # group by same movie name
         try:
-            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName = ANY(SELECT movieName FROM Watched_Movies WHERE Username = ?)", session['username'], session['username'])
+            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ?)", session['username'], session['username'])
             gMNData = c.fetchall()
-            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+#            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
             flash("Nothing found")
-            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+#            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        
+        # group by same location
+        try:
+            c.execute("SELECT DISTINCT Username FROM Users WHERE Username <> ? AND Locations = (SELECT Locations FROM Users WHERE Username = ?)", session['username'], session['username'])
+            gLocData = c.fetchall()
+        except:
+            gLocData = " "
 
+        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         flash("Login is required")
