@@ -170,6 +170,21 @@ def postadd():
     c.close()
     return render_template('home.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
+@app.route('/mymovies')
+def mymovies():
+    c = conn().cursor()
+    try:
+        c.execute("SELECT movieName, MovieYear, Director_name, Genre, Lead_Actor, roles, Rating, review, UserRating, url FROM Watched_Movies WHERE Username = ?", session['username'])
+        data = c.fetchall()
+        c.close()
+        return render_template('mymovies.html', rows = data, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+    except:
+        flash("Nothing found")
+        c.close()
+        return render_template('mymovies.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+    
+
 @app.route('/register')
 def register():
     return render_template('register.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
