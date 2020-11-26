@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Update Last Name</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  </head>
+  <body>
+    <!REFERENCE = From Flask notes>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block header %}
+    {% include 'top_bar.html' %}
+    {% endblock %}
+  <!-- Reference: https://stackoverflow.com/questions/24922831/flask-display-user-register-or-already-login-in-every-template-of-each-module -->
+
+      </div>
+    </nav>
+
+
+
+    <div class="row">
+
+    	<div style="width: 30%; margin: 25px auto;">
+
+        <h1 style="text-align: center;">
+      		Change Last Name
+      	</h1>
+    	<form action="/LastUP" method="POST">
+
+
+    		<div class="form-group">
+    			<input class="form-control" type="password" name="password" placeholder="password" min="0.01" step="0.01">
+            </div>
+
+            <div class="form-group">
+    			<input class="form-control" type="text" name="lname" placeholder="Type in your new last name">
+    		</div>
+
+
+    		<div class="form-group">
+    		<button class="btn btn-lg btn-primary btn-block">Submit!</button>
+    		</div>
+
+    	</form>
+
+    	</div>
+
+    </div>
+  </body>
+</html>
