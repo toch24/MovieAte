@@ -55,12 +55,14 @@
         <input type = "hidden" name = "id" value = "{{ row[10] }}" >
         <button style="background-color:blue; border-color:blue; color:black" type = "submit" class="btn btn-md btn-success btn-block">Edit</button>
        </form>
-       <form action="/remove" method="POST">
-        <input type = "hidden" name = "id" value = "{{ row[10] }}" >
-        <button  type = "submit" class="btn btn-md btn-success btn-block">Remove</button>
-       </form>
-     </td>
 
+     </td>
+     <td>
+     <form action="/remove" method="POST">
+      <input type = "hidden" name = "id" value = "{{ row[10] }}" >
+      <button  type = "submit" class="btn btn-md btn-success btn-block">Remove</button>
+     </form>
+    </td>
   
     </tr>
   
