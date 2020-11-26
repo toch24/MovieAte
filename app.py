@@ -372,7 +372,7 @@ def mygroup():
 
         # group by same movie name, and only the movies that the user highly rated
         try:
-            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating)", session['username'], session['username'])
+            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND UserRating > 5 AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating > 5)", session['username'], session['username'])
             gMNData = c.fetchall()
 #            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
