@@ -159,8 +159,13 @@ def postadd():
     rating = request.form['rating']
     url = request.form['url']
     id = request.form['id']
-    userrating = request.form['userrating']
+    userrating = float(request.form['userrating'])
     review = request.form['review']
+    if userrating > 10:
+        userrating = 10
+    elif userrating < 0:
+        userrating = 0
+
     try:
         c.execute("INSERT INTO Watched_Movies (Username, movieID, movieName, MovieYear, Director_name, Genre, Lead_Actor, roles, Rating, url, UserRating, review) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", session['username'], id, title, int(year), str(directors), str(genres), actor, role, float(rating), url, float(userrating), review)
         c.commit()
@@ -194,8 +199,13 @@ def postedit():
     c = conn().cursor()
     id = request.form['id']
     password = request.form['password']
-    userrating = request.form['userrating']
+    userrating = float(request.form['userrating'])
     review = request.form['review']
+
+    if userrating > 10:
+        userrating = 10
+    elif userrating < 0:
+        userrating = 0
 
     c.execute("SELECT Password FROM Users WHERE Username = ?", session['username'])
     userpassword = c.fetchone()
@@ -357,16 +367,16 @@ def mygroup():
             gData = c.fetchall()
 #            return render_template('mygroup.html', rows = gData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
-            flash("Nothing found")
+            gData = " "
 #            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
-        # group by same movie name
+        # group by same movie name, and only the movies that the user highly rated
         try:
-            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ?)", session['username'], session['username'])
+            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating)", session['username'], session['username'])
             gMNData = c.fetchall()
 #            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
-            flash("Nothing found")
+            gMNData = " "
 #            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         
         # group by same location
