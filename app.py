@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 import pyodbc
 from imdb import IMDb
+from collections import Counter
 
 app = Flask(__name__)
 app.secret_key = "qwroiqwkdnkas"
@@ -361,23 +362,19 @@ def logout():
 def mygroup():
     if 'logged' in session:
         c = conn().cursor()
-        # Test table
+        # Test table, make sure to delete this eventually
         try:
             c.execute("SELECT movieName, MovieYear, Director_name, Genre, UserRating, url, movieID FROM Watched_Movies WHERE Username = ?", session['username'])
             gData = c.fetchall()
-#            return render_template('mygroup.html', rows = gData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
             gData = " "
-#            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
         # group by same movie name, and only the movies that the user highly rated
         try:
             c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND UserRating > 5 AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating > 5)", session['username'], session['username'])
             gMNData = c.fetchall()
-#            return render_template('mygroup.html', mNrows = gMNData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         except:
             gMNData = " "
-#            return render_template('mygroup.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         
         # group by same location
         try:
@@ -386,7 +383,32 @@ def mygroup():
         except:
             gLocData = " "
 
-        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        # group by same genre (will this work? probs not)
+        # GOAL: Given a string of multiple genres, determine which genre the user likes the most,
+        # and find other users that also like that genre
+        
+        try:
+            c.execute("SELECT Genre FROM Watched_Movies WHERE Username = ? AND UserRating > 5", session['username'])
+            userGenreList = c.fetchall() #this list is a list of string, use double for loop
+            allUserGenresList = []
+            for eachStr in userGenreList:
+                theString = eachStr[0]
+                stripEachStr = theString[1:-1]
+                eachStr_split = stripEachStr.split(', ')
+                for x in eachStr_split:
+                    allUserGenresList.append(x)
+                
+            def most_frequent(allUserGenresList):
+                occurance_count = Counter(allUserGenresList)
+                return occurance_count.most_common(1)[0][0]
+
+            favGenre = most_frequent(allUserGenresList)
+                # now repeat for all the other users ????
+        except:
+            userGenreList = " "
+            favGenre = "None"
+
+        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         flash("Login is required")
