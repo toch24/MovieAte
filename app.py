@@ -8,10 +8,10 @@ app.secret_key = "qwroiqwkdnkas"
 ia = IMDb()
 
 def conn():
-    server = 'imovies.database.windows.net'
-    db = 'imoviesdb'
-    username = 'imovies'
-    password = 'COP4710!'
+    server = 'new-movieate.database.windows.net'
+    db = 'new-movieate'
+    username = 'newCOP4710AdminLogin'
+    password = 'newCOP4710Password'
     return pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+db+';UID='+username+';PWD='+password)
 
 
@@ -403,12 +403,13 @@ def mygroup():
                 return occurance_count.most_common(1)[0][0]
 
             favGenre = most_frequent(allUserGenresList)
+            favGenre = favGenre[1:-1]
                 # now repeat for all the other users ????
         except:
             userGenreList = " "
-            favGenre = "None"
+            favGenre = "nothing"
 
-        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = favGenre, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         flash("Login is required")
