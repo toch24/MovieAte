@@ -238,13 +238,14 @@ def profile():
     if 'logged' in session:
         user = session['username']
         c = conn().cursor()
-        c.execute("SELECT FirstName, LastName FROM Users WHERE Username = ?", user)
+        c.execute("SELECT FirstName, LastName, FavoriteGenre FROM Users WHERE Username = ?", user)
         data = c.fetchone()
         c.close()
 
         fname = data[0]
         lname = data[1]
-        return render_template('profile.html', name = user, firstname = fname, lastname = lname, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        favoritegenre = data[2]
+        return render_template('profile.html', name = user, firstname = fname, lastname = lname, favoritegenre = favoritegenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
     else:
         return redirect('/login')
 
