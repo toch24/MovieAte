@@ -404,15 +404,21 @@ def mygroup():
 
             favGenre = most_frequent(allUserGenresList)
             favGenre = favGenre[1:-1]
-                # now repeat for all the other users ????
+            c.execute("UPDATE Users SET FavoriteGenre = ? WHERE Username = ?", favGenre, session['username'])
+            c.commit()
+            c.execute("SELECT DISTINCT Username, FavoriteGenre FROM Users WHERE Username <> ? AND FavoriteGenre = (SELECT FavoriteGenre FROM Users WHERE Username = ?)", session['username'], session['username'])
+            genData = c.fetchall()
         except:
             userGenreList = " "
-            favGenre = "nothing"
+            favGenre = "Nothing"
+            genData = " "
+            c.execute("UPDATE Users SET FavoriteGenre = ? WHERE Username = ?", favGenre, session['username'])
+            c.commit()
 
-        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = favGenre, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
-        flash("Login is required")
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 
