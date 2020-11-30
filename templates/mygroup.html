@@ -27,13 +27,17 @@
       <thead>
       <td>Users</td>
       <td>Movie</td>
+      <td>Review</td>
+      <td>Rating</td>
       </thead>
       
     {% for row in mNrows %}
       <tr>
         <td>{{ row[0]}}</td>
         <td>{{ row[1]}}</td>
-      
+        <td>{{ row[2]}}</td>
+        <td>{{ row[3]}}</td>
+    
      
       <td>
         <form action="/email" method="POST">
