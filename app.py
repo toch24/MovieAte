@@ -399,16 +399,10 @@ def nearbyusers():
 def mygroup():
     if 'logged' in session:
         c = conn().cursor()
-        # Test table, make sure to delete this eventually
-        try:
-            c.execute("SELECT movieName, MovieYear, Director_name, Genre, UserRating, url, movieID FROM Watched_Movies WHERE Username = ?", session['username'])
-            gData = c.fetchall()
-        except:
-            gData = " "
 
         # group by same movie name, and only the movies that the user highly rated
         try:
-            c.execute("SELECT DISTINCT Username FROM Watched_Movies WHERE Username <> ? AND UserRating > 5 AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating > 5)", session['username'], session['username'])
+            c.execute("SELECT Username, movieName FROM Watched_Movies WHERE Username <> ? AND UserRating > 5 AND movieName IN(SELECT movieName FROM Watched_Movies WHERE Username = ? AND UserRating > 5)", session['username'], session['username'])
             gMNData = c.fetchall()
         except:
             gMNData = " "
@@ -447,7 +441,7 @@ def mygroup():
             c.commit()
 
 
-        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        return render_template('mygroup.html', mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
