@@ -44,7 +44,8 @@ def email():
     email = c.fetchone()
     email = email[0]
     Emailer('' , '' , str(email))
-    return redirect('/nearbyusers')
+    prev = request.referrer
+    return redirect(prev)
 
 def Emailer(text, subject, recipient):
     outlook = win32.Dispatch('outlook.application')
