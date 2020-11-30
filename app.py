@@ -521,5 +521,7 @@ def mygroup():
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
 
+
+
 if __name__ == '__main__':
     app.run()
