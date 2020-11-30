@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, flash, session, url
 import pyodbc
 from imdb import IMDb
 from collections import Counter
+import os
+import win32com.client as win32
+
+
 
 app = Flask(__name__)
 app.secret_key = "qwroiqwkdnkas"
@@ -29,6 +33,25 @@ def login():
 @app.route('/home')
 def homeuser():
     return redirect(url_for('.home') )
+
+@app.route('/email', methods = ['POST', 'GET'])
+def email():
+    c = conn().cursor()
+    username = request.form['username']
+    c.execute("SELECT Email FROM Users WHERE Username = ?", username)
+
+    email = c.fetchone()
+    email = email[0]
+    Emailer('' , '' , str(email))
+    return redirect('/nearbyusers')
+
+def Emailer(text, subject, recipient):
+    outlook = win32.Dispatch('outlook.application')
+    mail = outlook.CreateItem(0)
+    mail.To = recipient
+    mail.Subject = subject
+    mail.HtmlBody = text
+    mail.Display(False)
 
 @app.route('/postlogin', methods = ['POST'])
 def postlogin():
@@ -337,10 +360,11 @@ def postregister():
     lname = request.form['lname']
     password = request.form['password']
     cpassword = request.form['cpassword']
+    email = request.form['email']
 
     if password == cpassword:
         try:
-            c.execute("INSERT INTO Users (Username, firstname, lastname, Locations, Password) VALUES (?, ?, ?, ?, ?)", username, fname, lname, location, password)
+            c.execute("INSERT INTO Users (Username, firstname, lastname, Locations, Password, email) VALUES (?, ?, ?, ?, ?, ?)", username, fname, lname, location, password, email)
             flash('Successfully registered')
             c.commit()
         except:
