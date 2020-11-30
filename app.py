@@ -383,11 +383,7 @@ def mygroup():
         except:
             gMNData = " "
         
-
-        # group by same genre (will this work? probs not)
-        # GOAL: Given a string of multiple genres, determine which genre the user likes the most,
-        # and find other users that also like that genre
-        
+        # group by genre
         try:
             c.execute("SELECT Genre FROM Watched_Movies WHERE Username = ? AND UserRating > 5", session['username'])
             userGenreList = c.fetchall() #this list is a list of string, use double for loop
@@ -415,6 +411,12 @@ def mygroup():
             genData = " "
             c.execute("UPDATE Users SET FavoriteGenre = ? WHERE Username = ?", favGenre, session['username'])
             c.commit()
+
+        # Recomend a movie
+        #try:
+
+        #except:
+
 
 
         return render_template('mygroup.html', mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
