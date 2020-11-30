@@ -507,7 +507,7 @@ def mygroup():
                 movie_list = []
 
             recMovie = []
-            for specMovie in movie_list:
+            for specMovie in movie_list[3:]:
                 if (favGenre in specMovie[3]) and (specMovie[6] > 6):
                     recMovie.append(specMovie)
                     break
