@@ -359,6 +359,18 @@ def logout():
     message = "Successfully Logged Out"
     return render_template('msg.html', msg = message, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
 
+@app.route('/nearbyusers')
+def nearbyusers():
+# group by same location
+    c = conn().cursor()
+    try:
+        c.execute("SELECT DISTINCT Username FROM Users WHERE Username <> ? AND Locations = (SELECT Locations FROM Users WHERE Username = ?)", session['username'], session['username'])
+        gLocData = c.fetchall()
+    except:
+        gLocData = " "
+
+    return render_template('nearbyusers.html', Locrows = gLocData, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
 @app.route('/mygroup', methods = ['POST', 'GET'])
 def mygroup():
     if 'logged' in session:
@@ -377,12 +389,6 @@ def mygroup():
         except:
             gMNData = " "
         
-        # group by same location
-        try:
-            c.execute("SELECT DISTINCT Username FROM Users WHERE Username <> ? AND Locations = (SELECT Locations FROM Users WHERE Username = ?)", session['username'], session['username'])
-            gLocData = c.fetchall()
-        except:
-            gLocData = " "
 
         # group by same genre (will this work? probs not)
         # GOAL: Given a string of multiple genres, determine which genre the user likes the most,
@@ -417,7 +423,7 @@ def mygroup():
             c.commit()
 
 
-        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Locrows = gLocData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        return render_template('mygroup.html', rows = gData, mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
