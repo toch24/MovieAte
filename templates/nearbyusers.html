@@ -32,7 +32,12 @@
   {% for row in Locrows %}
     <tr>
       <td>{{ row[0]}}</td>
- 
+      <td>
+        <form action="/email" method="POST">
+         <input type = "hidden" name = "username" value = "{{ row[0] }}" >
+         <button  type = "submit" class="btn btn-md btn-success btn-block">Email!</button>
+        </form>
+       </td>
     </tr>
   
   {% endfor %}
