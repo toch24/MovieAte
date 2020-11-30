@@ -439,12 +439,14 @@ def mygroup():
             genData = " "
             c.execute("UPDATE Users SET FavoriteGenre = ? WHERE Username = ?", favGenre, session['username'])
             c.commit()
-
+    
 
         return render_template('mygroup.html', mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+
+
 
 
 if __name__ == '__main__':
