@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>idk</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  </head>
+  <body>
+
+  {% block bar %}
+  {% include 'top_bar.html' %}
+  {% endblock %}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+          {{ message }}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+  <h1 style="text-align: center;">
+    Nearby Users in your Area!
+  </h1>
+  <div class="container">
+    <table border = 2>
+    <thead>
+    <td>Users</td>
+    </thead>
+    
+  {% for row in Locrows %}
+    <tr>
+      <td>{{ row[0]}}</td>
+ 
+    </tr>
+  
+  {% endfor %}
+    </table>
+    </div>
+
+  </body>
+</html>
