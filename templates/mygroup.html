@@ -19,36 +19,6 @@
     {% endif %}
   {% endwith %}
 
-
-  <h1 style="text-align: center;">
-    My Group
-  </h1>
-  <div class="container">
-    <table border = 2>
-    <thead>
-    <td> </td>
-    <td>Movie</td>
-    <td>Year</td>
-    <td>Directors</td>
-    <td>Genres</td>
-    <td>My Rating</td>
-    </thead>
-    
-  {% for row in rows %}
-    <tr>
-      <td> <img src ="{{ row[5]}}" width="75" height="75"></td>
-      <td>{{ row[0]}}</td>
-      <td>{{ row[1]}}</td>
-      <td>{{ row[2]}}</td>
-      <td>{{ row[3]}}</td>
-      <td>{{ row[4]}}</td>
- 
-    </tr>
-  
-  {% endfor %}
-    </table>
-    </div>
-
     <h1 style="text-align: center;">
       Matching Users Based On Liked Movies
     </h1>
@@ -56,12 +26,13 @@
       <table border = 2>
       <thead>
       <td>Users</td>
+      <td>Movie</td>
       </thead>
       
     {% for row in mNrows %}
       <tr>
         <td>{{ row[0]}}</td>
-   
+        <td>{{ row[1]}}</td>
       </tr>
     
     {% endfor %}
