@@ -98,8 +98,11 @@ def postmoviesearch():
             movieID = movie.movieID
             movieidlist.append(movieID)
             movie = ia.get_movie(movieID)
-            year = movie['year']
-            yearlist.append(year)
+            try:
+                year = movie['year']
+                yearlist.append(year)
+            except:
+                yearlist.append("N/A")
             try:
                 dlst = []
                 for director in movie['directors']:
@@ -463,8 +466,11 @@ def mygroup():
                     movieID = movie.movieID
                     movieidlist.append(movieID)
                     movie = ia.get_movie(movieID)
-                    year = movie['year']
-                    yearlist.append(year)
+                    try:
+                        year = movie['year']
+                        yearlist.append(year)
+                    except:
+                        yearlist.append("N/A")
                     try:
                         dlst = []
                         for director in movie['directors']:
