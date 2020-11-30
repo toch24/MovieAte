@@ -4,6 +4,7 @@ from imdb import IMDb
 from collections import Counter
 import os
 import win32com.client as win32
+import string, random
 
 
 
@@ -425,6 +426,9 @@ def mygroup():
 
             favGenre = most_frequent(allUserGenresList)
             favGenre = favGenre[1:-1]
+            if favGenre[-1] in "\'":
+                favGenre = favGenre[:-1]
+
             c.execute("UPDATE Users SET FavoriteGenre = ? WHERE Username = ?", favGenre, session['username'])
             c.commit()
             c.execute("SELECT DISTINCT Username, FavoriteGenre FROM Users WHERE Username <> ? AND FavoriteGenre = (SELECT FavoriteGenre FROM Users WHERE Username = ?)", session['username'], session['username'])
@@ -437,13 +441,81 @@ def mygroup():
             c.commit()
 
         # Recomend a movie
-        #try:
+        try:
+            name = random.choice(string.ascii_letters)
+            movies = ia.search_movie(name)
+            
+            if movies:
+                namelist = []
+                yearlist = []
+                directorlist = []
+                genrelist = []
+                actorlist = []
+                rolelist = []
+                ratinglist = []
+                imageurl = []
+                movieidlist = []
+            
+                for movie in movies:
+                    namelist.append(movie['title'])
+                    imageurl.append(movie['cover url'])
+                    movieID = movie.movieID
+                    movieidlist.append(movieID)
+                    movie = ia.get_movie(movieID)
+                    year = movie['year']
+                    yearlist.append(year)
+                    try:
+                        dlst = []
+                        for director in movie['directors']:
+                            dlst.append(director['name'])
+            
+                        tuple_list = tuple(dlst)
+                        directorlist.append(tuple(dlst))  
+            
+                    except:
+                        directorlist.append("N/A")
+                    try:
+                        glst = []
+                        for genre in movie['genres']:
+                            glst.append(genre)
+                        tuple_list = tuple(glst)
+                        genrelist.append(tuple_list)
+            
+                    except:
+                        genrelist.append("N/A")
+                    try:
+                        actor = movie['cast'][0]
+                        main_actor = actor['name']
+                        actorlist.append(main_actor)
+                        role = actor.currentRole
+                        rolelist.append(role)
+                    except:
+                        actorlist.append("N/A")
+                        rolelist.append("N/A")
+                    
+                    try:
+                        rating = movie.data['rating']
+                        ratinglist.append(rating)
+                    except:
+                        ratinglist.append("N/A")
+            
+                movie_list = list(zip(namelist, yearlist, directorlist, genrelist, actorlist, rolelist, ratinglist, imageurl, movieidlist))
+            
+            else:
+                flash("No movie with that name")
+                movie_list = []
 
-        #except:
+            recMovie = []
+            for specMovie in movie_list:
+                if (favGenre in specMovie[3]) and (specMovie[6] > 5):
+                    recMovie.append(specMovie)
+                    break
+        
+        except:
+            recMovie = "LLL"
 
 
-
-        return render_template('mygroup.html', mNrows = gMNData, Genrows = genData, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
+        return render_template('mygroup.html', mNrows = gMNData, Genrows = genData, RecomendedMovie = recMovie, userGenre = favGenre, usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
         c.close()
     else:
         return render_template('login.html', usr=session['username'] if 'username' in session else "null", is_log=session['logged'] if 'logged' in session else False)
