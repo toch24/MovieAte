@@ -238,10 +238,10 @@ def postedit():
 
     c.execute("SELECT Password FROM Users WHERE Username = ?", session['username'])
     userpassword = c.fetchone()
-    print(userpassword)
+ 
     if password == userpassword[0]:
         try:
-            c.execute("UPDATE Watched_Movies SET UserRating = ?, review = ? WHERE movieID = ?", userrating, review, id)
+            c.execute("UPDATE Watched_Movies SET UserRating = ?, review = ? WHERE movieID = ?, Username = ?", userrating, review, id, session['username'])
             c.commit()
             flash("Successfully Updated")
             return redirect('/mymovies')
@@ -256,7 +256,7 @@ def postedit():
 def remove():
     c = conn().cursor()
     id = request.form['id']
-    c.execute("DELETE FROM Watched_Movies WHERE movieID = ?", id)
+    c.execute("DELETE FROM Watched_Movies WHERE movieID = ?, Username = ?", id, session[id])
     c.commit()
     c.close()
     return redirect("/mymovies")
